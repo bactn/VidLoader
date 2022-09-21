@@ -64,7 +64,7 @@ The sketchy description how *VidLoader* works is represented in the next diagram
 To integrate *VidLoader* into your Xcode project using CocoaPods, specify it in your `Podfile`:
 
 ```ObjC
-pod 'VidLoader', :git => 'https://github.com/Cyklet/VidLoader.git', :tag => #tag
+pod 'VidLoader', :git => 'https://github.com/bactn/VidLoader', :tag => #tag
 ```
 
 Then, run the following command:
