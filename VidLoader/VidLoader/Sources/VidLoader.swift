@@ -265,8 +265,11 @@ public final class VidLoader: VidLoadable {
     }
 
     func setupResourceDelegate(item: ItemInformation,
-                               task: AVAssetDownloadTask,
+                               task: URLSessionTask,
                                streamResource: StreamResource) {
+        var assetTask: AVAssetDownloadTask? = task as? AVAssetDownloadTask
+        var aggTask: AVAggregateAssetDownloadTask? = task as? AVAggregateAssetDownloadTask
+        
         let keyDidLoad: () -> Void = { [weak self] in
             guard let upToDateItem = task.item else { return }
             self?.session.sendKeyLoaded(item: upToDateItem)
@@ -276,8 +279,14 @@ public final class VidLoader: VidLoadable {
         }
         let observer = ResourceLoaderObserver(taskDidFail: taskDidFail, keyDidLoad: keyDidLoad)
         let resourceLoader = ResourceLoader(observer: observer, streamResource: streamResource, headers: item.headers)
-        task.urlAsset.resourceLoader.setDelegate(resourceLoader, queue: resourceLoader.queue)
-        task.urlAsset.resourceLoader.preloadsEligibleContentKeys = true
+        if assetTask != nil {
+            assetTask?.urlAsset.resourceLoader.setDelegate(resourceLoader, queue: resourceLoader.queue)
+            assetTask?.urlAsset.resourceLoader.preloadsEligibleContentKeys = true
+        }
+        if aggTask != nil {
+            aggTask?.urlAsset.resourceLoader.setDelegate(resourceLoader, queue: resourceLoader.queue)
+            aggTask?.urlAsset.resourceLoader.preloadsEligibleContentKeys = true
+        }
         resourcesDelegatesHandler.add(identifier: item.identifier, loader: resourceLoader)
     }
 }
